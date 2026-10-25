@@ -44,7 +44,7 @@ SIGNATURE = re.compile(
     re.I,
 )
 METADATA = re.compile(
-    r"(\.txt$|\.json$|\.md$|\.yaml$|\.yml$|\.spdx$|\.cdx$|\.sbom$|\.html$|\.xml$|\.sh$|\.ps1$|\.toml$|\.lock$)",
+    r"(\.txt$|\.json$|\.md$|\.yaml$|\.yml$|\.spdx$|\.cdx$|\.sbom$|\.html$|\.xml$|\.sh$|\.ps1$|\.toml$|\.lock$|\.pub$|\.key$)",
     re.I,
 )
 
@@ -180,17 +180,21 @@ def scan_repo(full_name, max_age_days):
         "signed": any(k == "signature" for k in kinds.values()),
         "checksums": any(k == "checksum" for k in kinds.values()),
     }
-    if row["immutable"]:
-        row["verdict"] = "immutable"
-    elif row["provenance"]:
-        row["verdict"] = "provenance"
-    elif row["signed"]:
-        row["verdict"] = "signed"
-    elif row["checksums"]:
-        row["verdict"] = "checksums only"
-    else:
-        row["verdict"] = "nothing"
+    row["verdict"] = verdict(row)
     return row, None
+
+
+def verdict(row):
+    """The strongest protection found, in order."""
+    if row["immutable"]:
+        return "immutable"
+    if row["provenance"]:
+        return "provenance"
+    if row["signed"]:
+        return "signed"
+    if row["checksums"]:
+        return "checksums only"
+    return "nothing"
 
 
 def summarize(rows, stars, skipped):
@@ -228,7 +232,7 @@ def summarize(rows, stars, skipped):
         )
     reasons = {}
     for why in skipped.values():
-        key = why.split(" ")[0] if why.startswith("latest") else why
+        key = "latest release too old" if why.startswith("latest") else why
         reasons[key] = reasons.get(key, 0) + 1
     out += ["", f"Skipped candidates: {reasons}", ""]
     return "\n".join(out) + "\n"

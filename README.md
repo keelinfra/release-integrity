@@ -20,14 +20,24 @@ run in [`results/trend.csv`](results/trend.csv). The set of repositories is
 re-queried each month, so it changes as projects cross 1,000 stars or stop
 releasing.
 
-Run it yourself with a token that can read public repositories:
+The scan runs on the 3rd of each month from
+[`.github/workflows/scan.yml`](.github/workflows/scan.yml) and commits its
+results here. A full run takes about 950 API calls and a few minutes.
+Repositories the token can't read are skipped and listed under `skipped` in
+`results.json`.
+
+Run it yourself with a token that can read public repositories (Python 3,
+standard library only):
 
 ```sh
 GITHUB_TOKEN=... python3 scan.py --out /tmp/scan
-python3 scan.py --repos owner/repo another/repo --out /tmp/scan
+GITHUB_TOKEN=... python3 scan.py --repos owner/repo another/repo --out /tmp/scan
+python3 -m unittest discover -s tests    # offline tests
 ```
 
-First write-up: [shenxianpeng.dev](https://shenxianpeng.dev/posts/2026/swappable-github-releases/).
+First write-up, with what maintainers can do about it:
+[English](https://shenxianpeng.dev/posts/2026/swappable-github-releases/) ·
+[中文](https://shenxianpeng.dev/zh-cn/posts/2026/swappable-github-releases/).
 
 ## License
 
