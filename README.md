@@ -1,5 +1,11 @@
 # Release integrity scan
 
+[![Monthly scan](https://github.com/keelinfra/release-integrity/actions/workflows/scan.yml/badge.svg)](https://github.com/keelinfra/release-integrity/actions/workflows/scan.yml)
+[![Tests](https://github.com/keelinfra/release-integrity/actions/workflows/test.yml/badge.svg)](https://github.com/keelinfra/release-integrity/actions/workflows/test.yml)
+[![Swappable releases](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fkeelinfra%2Frelease-integrity%2Fmain%2Fresults%2Flatest.json&query=%24.swappable_share&label=swappable%20releases&color=orange)](results/trend.csv)
+[![Last scan](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fkeelinfra%2Frelease-integrity%2Fmain%2Fresults%2Flatest.json&query=%24.date&label=last%20scan&color=blue)](results)
+[![License](https://img.shields.io/badge/license-Apache--2.0%20code%20%7C%20CC%20BY%204.0%20data-green)](#license)
+
 Could someone with write access to a repository replace the files in its
 latest GitHub release, and would a downloader be able to tell?
 
@@ -16,7 +22,8 @@ year old and ships binaries, and records for that latest release:
 | `verdict` | the strongest of the above; `checksums only` and `nothing` count as swappable |
 
 Results: one directory per run under [`results/`](results), and one line per
-run in [`results/trend.csv`](results/trend.csv). The set of repositories is
+run in [`results/trend.csv`](results/trend.csv), and the latest totals in
+[`results/latest.json`](results/latest.json). The set of repositories is
 re-queried each month, so it changes as projects cross 1,000 stars or stop
 releasing.
 

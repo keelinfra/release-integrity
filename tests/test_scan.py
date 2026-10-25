@@ -47,5 +47,25 @@ class Verdict(unittest.TestCase):
         self.assertEqual(v(provenance=True, immutable=True), "immutable")
 
 
+class Trend(unittest.TestCase):
+    def test_trend_and_latest(self):
+        import json
+        import tempfile
+
+        rows = [{"verdict": v} for v in ["immutable", "checksums only", "nothing", "nothing"]]
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "trend.csv")
+            scan.append_trend(path, rows, 10)
+            scan.append_trend(path, rows, 10)
+            with open(path) as f:
+                lines = f.read().splitlines()
+            self.assertEqual(len(lines), 3)  # header + two runs
+            self.assertTrue(lines[1].endswith(",10,4,1,0,0,1,2,3"))
+            with open(os.path.join(d, "latest.json")) as f:
+                latest = json.load(f)
+            self.assertEqual(latest["swappable"], 3)
+            self.assertEqual(latest["swappable_share"], "75% of 4")
+
+
 if __name__ == "__main__":
     unittest.main()
