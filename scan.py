@@ -294,6 +294,11 @@ def append_trend(path, rows, candidates):
         if new:
             w.writeheader()
         w.writerow(line)
+    # The latest totals as JSON next to the trend file, for the README badge.
+    latest = {**line, "swappable_share": f"{line['swappable'] / len(rows):.0%} of {len(rows)}"}
+    with open(os.path.join(os.path.dirname(path) or ".", "latest.json"), "w") as f:
+        json.dump(latest, f, indent=1)
+        f.write("\n")
 
 
 def write(out, rows, stars, skipped):

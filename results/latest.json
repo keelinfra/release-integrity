@@ -1,0 +1,12 @@
+{
+ "date": "2026-10-25",
+ "candidates": 353,
+ "scanned": 241,
+ "immutable": 25,
+ "provenance": 19,
+ "signed": 19,
+ "checksums only": 111,
+ "nothing": 67,
+ "swappable": 178,
+ "swappable_share": "74% of 241"
+}
