@@ -209,7 +209,7 @@ def summarize(rows, stars, skipped):
         "release is under a year old and ships binaries. Latest release only.",
         "",
         "| Verdict (best protection found) | Repos | Share |",
-        "|---|---|---|",
+        "|---|---:|---:|",
     ]
     for v in order:
         out.append(f"| {v} | {counts[v]} | {counts[v] / n:.0%} |")
@@ -222,19 +222,28 @@ def summarize(rows, stars, skipped):
         "",
         "Top 20 by stars:",
         "",
-        "| Repo | Stars | Tag | Immutable | Provenance | Signed | Checksums |",
-        "|---|---|---|---|---|---|---|",
+        "| Repo | Stars | Release | Immutable | Provenance | Signed | Checksums |",
+        "|---|---:|---|:---:|:---:|:---:|:---:|",
     ]
-    yn = lambda b: "yes" if b else "-"
+    # A tick for what a release has and a dot for what it lacks: the eye finds
+    # the few ticks in a column of dots faster than "yes" among dashes.
+    yn = lambda b: "✓" if b else "·"
     for r in rows[:20]:
+        repo, tag = r["repo"], r["tag"]
+        star = stars.get(repo)
+        star = f"{star:,}" if isinstance(star, int) else ""
         out.append(
-            f"| {r['repo']} | {stars.get(r['repo'], '')} | {r['tag']} | {yn(r['immutable'])} | {yn(r['provenance'])} | {yn(r['signed'])} | {yn(r['checksums'])} |"
+            f"| [{repo}](https://github.com/{repo}) | {star} | [{tag}](https://github.com/{repo}/releases/tag/{tag})"
+            f" | {yn(r['immutable'])} | {yn(r['provenance'])} | {yn(r['signed'])} | {yn(r['checksums'])} |"
         )
     reasons = {}
     for why in skipped.values():
         key = "latest release too old" if why.startswith("latest") else why
         reasons[key] = reasons.get(key, 0) + 1
-    out += ["", f"Skipped candidates: {reasons}", ""]
+    if reasons:
+        listed = ", ".join(f"{k} ({c})" for k, c in sorted(reasons.items(), key=lambda kv: (-kv[1], kv[0])))
+        out += ["", f"Skipped candidates: {listed}."]
+    out.append("")
     return "\n".join(out) + "\n"
 
 
