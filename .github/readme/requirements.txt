@@ -1,0 +1,10 @@
+# For the README header image, redrawn after each monthly scan by
+# keelinfra/.github assets/src/readme/readme_art.py (see scan.yml).
+# Pinned with hashes for the runner's Python 3.12 on x86_64 Linux.
+brotli==1.2.1 \
+    --hash=sha256:4b9dd0173ca5e01d1eb307d3c184fe8c09bdc168ede560889b1018d216d38c61
+fonttools==4.68.0 \
+    --hash=sha256:d76f8fdcb6936f5e1045a0c9dd721a4bf11112e60d1e243bfa1d39f06a8b3104 \
+    --hash=sha256:3edce69ecdefa73ab1041901ca22eefed6ebb93a77bc77e889d940479f25bf7d
+uharfbuzz==0.57.0 \
+    --hash=sha256:72b5251e81fbde5e398ecd5d618c521be8cfde42f281d569e47ab9c9a5e669fe
