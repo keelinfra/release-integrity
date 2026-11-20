@@ -24,11 +24,32 @@ jobs:
         run: |
           day=$(date -u +%F)
           python3 scan.py --out "results/$day" --trend results/trend.csv
+      # The README header image shows the latest totals. It is drawn by the
+      # keelinfra/.github generator, pinned to a commit like the actions here.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: keelinfra/.github
+          ref: d03a78883e06d725425cea8ebe7e998ea98791ce
+          path: .readme-art
+          persist-credentials: false
+      - name: Redraw the README header image
+        continue-on-error: true   # a drawing problem must not hold back the results
+        run: |
+          python3 -m venv /tmp/art
+          /tmp/art/bin/pip install --quiet --only-binary=:all: --require-hashes -r .github/readme/requirements.txt
+          /tmp/art/bin/python - <<'PY'
+          import json, sys
+          sys.path.insert(0, ".readme-art/assets/src/readme")
+          import readme_art as art
+          latest = json.load(open("results/latest.json"))
+          for theme in ("light", "dark"):
+              art.write(f".github/readme/hero-{theme}.svg", art.hero_integrity(theme, latest))
+          PY
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results
+          git add results .github/readme/hero-light.svg .github/readme/hero-dark.svg
           git diff --cached --quiet && exit 0
           git commit -m "release-integrity: results $(date -u +%F) [skip ci]"
           git push origin "HEAD:$GITHUB_REF_NAME"
